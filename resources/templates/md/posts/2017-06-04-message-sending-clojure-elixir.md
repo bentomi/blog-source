@@ -58,7 +58,7 @@ executed by running the following command:
 elixir --erl "+P 10000" -r chain.exs -e "Chain.run(10000, 10000)"
 ```
 
-On my maching it prints `{5877968, :ok}`, meaining that everything
+On my machine it prints `{5877968, :ok}`, meaning that everything
 went well and the test took about 5.9 seconds.  During this time, all
 CPU cores had 100% load.
 
@@ -215,7 +215,7 @@ box, see [ASYNC-94](https://dev.clojure.org/jira/browse/ASYNC-94))
 let's compare this solution and the Elixir one.
 
 Both solutions create processes for relaying the messages, but only
-the Elixir solution is truly asynchronous.  In Elixr, each process has
+the Elixir solution is truly asynchronous.  In Elixir, each process has
 a mailbox where the messages sent to it land and the sender doesn't
 wait until the addressee pulls the message.  In the core.async
 solution the processes have to synchronise, as the channels have no
@@ -281,7 +281,7 @@ This change more than doubles the runtime of the Elixir version:
 roughly unchanged: `"Elapsed time: 9755.010961 msecs"`. This is
 because Erlang processes share nothing, and the message is copied each
 time it is sent.  In Clojure there is a global heap, so only a
-refernce to the list has to be sent around.  Why does the Erlang
+reference to the list has to be sent around.  Why does the Erlang
 virtual machine do this copying?  After all, Erlang lists are
 immutable so sharing them should not be dangerous.  The reason is that
 not sharing data enables the Erlang VM to maintain separate heaps for
@@ -294,15 +294,15 @@ and more predictable GC related latencies.
 I compared asynchronous message passing performance of Elixir and
 Clojure, in Clojure I looked at both agents and core.async.  I
 discussed issues related to scheduling, buffering and garbage
-collection.  The following points seem to be the most important take
-aways:
+collection.  The following points seem to be the most important
+takeaways:
 
 1. The Erlang process scheduler and message passing system is an
    impressive piece of work, and offers excellent out of the box
    experience.
 1. In Clojure, agents are not the way to go if message passing
    performance is vital.
-1. Clojure's core.async library offers simiar message passing
+1. Clojure's core.async library offers similar message passing
    performance as Erlang, especially if the messages are bigger than
    just a couple of small numbers and buffering can be tweaked.
 1. Erlang's GC probably causes smaller latencies than the default JVM
